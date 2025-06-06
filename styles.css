@@ -1,0 +1,136 @@
+/* ==========================
+   styles.css
+   ========================== */
+
+/* 1. Global Reset + Body Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #2c3e50;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* 2. App Root Container */
+#app-root {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 3. Turn Tracker Header */
+.turn-tracker {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #2c3e50;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 4. Action Grid */
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+}
+
+/* 5. Action Card */
+.action-card {
+  background: #fff;
+  border: 3px solid #95a5a6;
+  border-radius: 12px;
+  padding: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.action-card.used {
+  opacity: 0.4;
+  pointer-events: none;
+  background: #bdc3c7 !important;
+}
+
+/* 6. Coach Hint Under Each Action */
+.coach-hint {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 6px;
+}
+
+/* 7. "Up Next" Preview */
+.up-next {
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 1.1em;
+  font-style: italic;
+  color: #2c3e50;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* 8. DM Controls Bar */
+.dm-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.dm-controls button {
+  font-size: 1.1em;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: #27ae60;
+  color: white;
+  transition: background 0.2s;
+}
+
+.dm-controls button:hover {
+  background: #229954;
+}
+
+/* 9. Initiative Mini-List for DM */
+.initiative-list {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 10px;
+  font-size: 0.9em;
+  color: #2c3e50;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* 10. Media Queries for Tablet/Phone (optional) */
+@media (max-width: 600px) {
+  .dm-controls button {
+    flex: 1;
+    font-size: 1em;
+    padding: 8px 12px;
+  }
+  .turn-tracker {
+    font-size: 1.5em;
+  }
+}

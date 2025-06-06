@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# VSCode
+.vscode/
+
+# Local build/artifacts (if you ever add)
+/dist/
