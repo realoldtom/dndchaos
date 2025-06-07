@@ -10,3 +10,5 @@ ehthumbs.db
 
 # Local build/artifacts (if you ever add)
 /dist/
+
+node_modules/
