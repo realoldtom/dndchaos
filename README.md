@@ -1,3 +1,8 @@
+[![CI](https://github.com/<you>/dnd-chaos-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/realoldtom/dndchaos/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-v1.1-brightgreen.svg)]()
+
+
 # D&D Chaos Manager – MVP (v1.1)
 
 A purpose-built, single-screen tool to help a first-time DM manage 12 Level-2 newbie players in chaotic combat.
