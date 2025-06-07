@@ -7,21 +7,9 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="app-root">
-    <!--
-      The script in app.js will render:
-        - Turn Tracker header
-        - Action grid with coach hints
-        - "Up Next" preview
-        - DM Controls (Next / Skip / Reset)
-    -->
-  </div>
+  <div id="app-root"></div>
 
-  <!-- Pull in character data first -->
-  <script src="data/characters.js"></script>
-  <!-- Storage utilities -->
-  <script src="utils/storage.js"></script>
-  <!-- Main application logic -->
-  <script src="app.js"></script>
+  <!-- app.js must be a module so that 'import' works -->
+  <script type="module" src="app.js"></script>
 </body>
 </html>

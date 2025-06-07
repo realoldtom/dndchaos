@@ -2,6 +2,15 @@
 // ====================
 // Main application logic to wire up the Chaos Manager MVP
 
+import {
+  loadState,
+  mergeState,
+  saveState,
+  clearState
+} from './utils/storage.js';
+
+import { characters, initiativeOrder } from './data/characters.js';
+
 // Global state variables (will be overwritten by mergeState on init)
 let state = {
   characters: {},         // Populated after mergeState
@@ -49,7 +58,7 @@ function renderUI() {
   const actionGrid = document.createElement('div');
   actionGrid.className = 'actions-grid';
 
-  currentChar.combatAbilities.forEach((ability, idx) => {
+  currentChar.combatAbilities.forEach((ability) => {
     const card = document.createElement('div');
     card.className = 'action-card';
     if (ability.used) card.classList.add('used');
@@ -124,15 +133,14 @@ function renderUI() {
   const miniList = document.createElement('div');
   miniList.className = 'initiative-list';
 
-  miniList.textContent = 'Initiative Order: ' 
-    + state.initiativeOrder
-        .map((item, idx) => {
-          const name = state.characters[item.char].name.replace(/[^a-zA-Z ]/g, '');
-          return idx === state.currentTurnIndex
-            ? `${name} (CURRENT)`
-            : name;
-        })
-        .join(' → ');
+  miniList.textContent =
+    'Initiative Order: ' +
+    state.initiativeOrder
+      .map((item, idx) => {
+        const name = state.characters[item.char].name.replace(/[^a-zA-Z ]/g, '');
+        return idx === state.currentTurnIndex ? `${name} (CURRENT)` : name;
+      })
+      .join(' → ');
   appRoot.appendChild(miniList);
 }
 
@@ -151,10 +159,10 @@ function resetCombat() {
   if (confirm('Reset combat? This will clear used abilities and restart initiative.')) {
     // Clear all 'used' flags
     for (const key in state.characters) {
-      state.characters[key].combatAbilities.forEach(a => a.used = false);
+      state.characters[key].combatAbilities.forEach((a) => (a.used = false));
     }
     state.currentTurnIndex = 0;
-    clearState();  // removes saved localStorage
+    clearState(); // removes saved localStorage
     renderUI();
   }
 }

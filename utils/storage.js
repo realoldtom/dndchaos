@@ -1,7 +1,7 @@
-// storage.js
+// utils/storage.js
 // ====================
-// Minimal localStorage helper functions
-// to save/load and reset session state.
+// Minimal localStorage helper functions to save/load and reset session state.
+// Exports must match how app.js calls them.
 
 const STORAGE_KEY = 'dndChaosState';
 
@@ -9,9 +9,9 @@ const STORAGE_KEY = 'dndChaosState';
  * Save the entire state object to localStorage.
  * @param {Object} state - e.g. { initiativeOrder, currentTurnIndex, characters }
  */
-function saveState(state) {
+export function saveState(state) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (e) {
     console.error('Failed to save state:', e);
   }
@@ -21,8 +21,8 @@ function saveState(state) {
  * Load the saved state from localStorage.
  * Returns null if not found or parse error.
  */
-function loadState() {
-  const raw = localStorage.getItem(STORAGE_KEY);
+export function loadState() {
+  const raw = window.localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
   try {
     return JSON.parse(raw);
@@ -35,8 +35,8 @@ function loadState() {
 /**
  * Clear all saved state (used by "Reset Combat").
  */
-function clearState() {
-  localStorage.removeItem(STORAGE_KEY);
+export function clearState() {
+  window.localStorage.removeItem(STORAGE_KEY);
 }
 
 /**
@@ -49,7 +49,7 @@ function clearState() {
  * @param {Object} savedState - the loaded state from localStorage
  * @returns {Object} merged state: { characters, initiativeOrder, currentTurnIndex }
  */
-function mergeState(freshChars, freshOrder, savedState) {
+export function mergeState(freshChars, freshOrder, savedState) {
   if (!savedState) {
     return {
       characters: freshChars,
@@ -58,12 +58,13 @@ function mergeState(freshChars, freshOrder, savedState) {
     };
   }
 
-  const mergedChars = JSON.parse(JSON.stringify(freshChars)); // deep copy
-  // Restore used flags per ability
+  // Deep clone freshChars so we don’t mutate the original definitions
+  const mergedChars = JSON.parse(JSON.stringify(freshChars));
+
+  // Restore each ability’s `used` flag
   for (const charKey in savedState.characters) {
     if (!mergedChars[charKey]) continue;
     const savedChar = savedState.characters[charKey];
-    // Restore each ability’s used field
     mergedChars[charKey].combatAbilities.forEach((ability, idx) => {
       if (savedChar.combatAbilities && savedChar.combatAbilities[idx]) {
         ability.used = savedChar.combatAbilities[idx].used;
@@ -71,7 +72,7 @@ function mergeState(freshChars, freshOrder, savedState) {
     });
   }
 
-  // We assume initiativeOrder array doesn’t change between sessions.
+  // We assume the initiative order array itself doesn’t change between sessions.
   const currentTurnIndex = savedState.currentTurnIndex ?? 0;
   return {
     characters: mergedChars,

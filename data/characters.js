@@ -1,8 +1,10 @@
-// characters.js
+/* exported characters initiativeOrder */
+
+// data/characters.js
 // Manually curated characters and initiative order for the MVP.
 // Each character is Level 2 (per PRD).
 
-const characters = {
+export const characters = {
   sparkleblast: {
     name: "✨ Sparkleblast",
     class: "Level 2 Elf Sorcerer",
@@ -139,11 +141,10 @@ const characters = {
       }
     ]
   }
-
   // You can stub out additional 8 characters as needed for a full 12-player test.
 };
 
-const initiativeOrder = [
+export const initiativeOrder = [
   { char: "sparkleblast", initiative: 18 },
   { char: "thorin", initiative: 15 },
   { char: "luna", initiative: 12 },

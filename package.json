@@ -1,0 +1,21 @@
+{
+  "name": "sessionmanager",
+  "version": "1.0.0",
+  "description": "A purpose-built, single-screen tool to help a first-time DM manage 12 Level-2 newbie players in chaotic combat.",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint": "eslint \"app.js\" \"utils/**/*.js\" \"data/**/*.js\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0"
+  }
+}
