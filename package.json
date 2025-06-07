@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint \"app.js\" \"utils/**/*.js\" \"data/**/*.js\"",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "snapshot": "node scripts/snapshot.js"
   },
   "keywords": [],
   "author": "",

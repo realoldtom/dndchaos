@@ -29,3 +29,10 @@ Guidance for contributing, extending, and maintaining the Chaos Manager codebase
 - Branch naming: `feat/`, `fix/`, `docs/`.
 - Conventional commits: `feat(module): description`.
 - Write tests for `mergeState()` and `renderUI()` in future.
+
+## 📦 Snapshot
+
+To export the current code as a ZIP:
+
+```bash
+npm run snapshot
