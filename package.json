@@ -23,7 +23,15 @@
     "prettier": "^3.5.3"
   },
   "lint-staged": {
-    "*.js": [
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "data/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "utils/**/*.js": [
       "eslint --fix",
       "prettier --write"
     ]
