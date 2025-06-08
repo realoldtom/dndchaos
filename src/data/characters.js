@@ -1,156 +1,383 @@
-/* exported characters initiativeOrder */
-
-// data/characters.js
-// Manually curated characters and initiative order for the MVP.
-// Each character is Level 2 (per PRD).
-
 export const characters = {
-  sparkleblast: {
-    name: "✨ Sparkleblast",
-    className: "Level 2 Elf Sorcerer",
-    hp: "8 / 14",
-    ac: "12",
-    spellSlots: "1 / 2",
-    combatAbilities: [
-      {
-        name: "Magic Missile",
-        desc: "3 darts of force (1d4+1 each), auto-hit",
-        coach: "Always hits—great when you can’t risk missing.",
-        used: false,
-      },
-      {
-        name: "Shield",
-        desc: "+5 AC until your next turn",
-        coach: "Use when you expect to be hit this round.",
-        used: false,
-      },
-      {
-        name: "Scorching Ray",
-        desc: "3 rays of fire (2d6 each), +5 to hit, 120 ft",
-        coach: "Good against multiple foes or focusing on one target.",
-        used: false,
-      },
-      {
-        name: "Dagger Attack",
-        desc: "+3 to hit, 1d4+1 damage, range 20/60 ft",
-        coach: "Fallback if you run out of spell slots.",
-        used: false,
-      },
-    ],
-    // We’re only doing a Combat MVP—omit social/exploration arrays.
-  },
-
-  thorin: {
-    name: "🪓 Thorin",
-    className: "Level 2 Dwarf Barbarian",
-    hp: "18 / 20",
+  acid: {
+    name: "Acid",
+    className: "Level 1 Tabaxi Rogue",
+    hp: "9 / 9",
     ac: "14",
     spellSlots: "0 / 0",
     combatAbilities: [
       {
-        name: "Greataxe Attack",
-        desc: "+5 to hit, 1d12+3 damage",
-        coach: "Your bread-and-butter—high damage up close.",
+        name: "Shortsword",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Rage",
-        desc: "+2 damage, resistance to physical damage (1/2 uses)",
-        coach: "Use early in tough fights; resets on long rest.",
+        name: "Crossbow",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Handaxe Throw",
-        desc: "+5 to hit, 1d6+3 damage, range 20/60 ft",
-        coach: "Keep enemies at bay—great if melee is dangerous.",
+        name: "Claws",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Reckless Attack",
-        desc: "Advantage on melee attacks, but enemies have advantage against you",
-        coach:
-          "Risky, but helps guarantee hits—use when you need a big strike.",
+        name: "Dagger",
+        desc: "",
+        coach: "",
         used: false,
       },
     ],
   },
-
-  luna: {
-    name: "🏹 Luna",
-    className: "Level 2 Elf Ranger",
-    hp: "14 / 16",
+  cheoah: {
+    name: "Cheoah Burpmiester",
+    className: "Level 1 Gnome Sorcerer",
+    hp: "16 / 16",
+    ac: "14",
+    spellSlots: "0 / 2",
+    combatAbilities: [
+      {
+        name: "Dagger",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Fire Bolt",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Shocking Grasp",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  ember: {
+    name: "Ember",
+    className: "",
+    hp: "10 / 10",
+    ac: "18",
+    spellSlots: "0 / 2",
+    combatAbilities: [
+      {
+        name: "Sickle",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Handaxe",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Scimitar",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Breath Weapon",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Dagger of Venom",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Ray of Frost",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  graicro: {
+    name: "Graicro",
+    className: "Level 1 Human Monk",
+    hp: "9 / 9",
+    ac: "14",
+    spellSlots: "0 / 0",
+    combatAbilities: [
+      {
+        name: "Shortsword",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Dart",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Unarmed Strike",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  ishbosheth: {
+    name: "Ish-Bosheth",
+    className: "Level 1 Tiefling Sorcerer",
+    hp: "9 / 9",
+    ac: "10",
+    spellSlots: "0 / 2",
+    combatAbilities: [
+      {
+        name: "Dagger",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Ray of Frost",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Magic Missile",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  ivey: {
+    name: "Ivey",
+    className: "Level 1 Half-Elf Ranger",
+    hp: "11 / 11",
+    ac: "16",
+    spellSlots: "0 / 0",
+    combatAbilities: [
+      {
+        name: "Shortsword (x2)",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Longbow",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  nimloth: {
+    name: "Nimloth",
+    className: "Level 1 Elf Druid",
+    hp: "10 / 10",
     ac: "15",
-    spellSlots: "0 / 0",
+    spellSlots: "0 / 2",
     combatAbilities: [
       {
-        name: "Longbow Attack",
-        desc: "+6 to hit, 1d8+3 damage, range 150/600 ft",
-        coach:
-          "High accuracy at range—stay back and shoot targets of opportunity.",
+        name: "Shortsword",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Shortsword Attack",
-        desc: "+5 to hit, 1d6+3 damage",
-        coach: "Better up close; use if melee is safe.",
+        name: "Thorn Whip",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Hunter's Mark",
-        desc: "Bonus 1d6 damage on attacks (coming at Level 2)",
-        coach: "Marks an enemy—gain extra damage every time you hit them.",
-        used: false,
-      },
-      {
-        name: "Two-Weapon Fighting",
-        desc: "Attack with your off-hand if wielding two weapons",
-        coach: "Allows you to deal extra damage with a second attack.",
+        name: "Chill Touch",
+        desc: "",
+        coach: "",
         used: false,
       },
     ],
   },
-
-  pip: {
-    name: "🗡️ Pip",
-    className: "Level 2 Halfling Rogue",
-    hp: "12 / 14",
+  nobstobber: {
+    name: "Nobstobber",
+    className: "Level 1 Tiefling Warlock",
+    hp: "9 / 9",
+    ac: "11",
+    spellSlots: "0 / 2",
+    combatAbilities: [
+      {
+        name: "Eldritch Blast",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Crossbow",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Sickle",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Dagger (x2)",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  pearl: {
+    name: "Pearl Highhaven",
+    className: "Level 1 Dragonborn Ranger",
+    hp: "9 / 9",
+    ac: "16",
+    spellSlots: "0 / 0",
+    combatAbilities: [
+      {
+        name: "Shortsword",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Longbow",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Lightning Breath",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  sennafef: {
+    name: "Sennafef",
+    className: "Level 1 Tiefling Bard",
+    hp: "10 / 10",
     ac: "13",
-    spellSlots: "0 / 0",
+    spellSlots: "0 / 2",
     combatAbilities: [
       {
-        name: "Shortsword Attack",
-        desc: "+5 to hit, 1d6+3 damage",
-        coach: "Solid melee damage—use when you can flank or have advantage.",
+        name: "Rapier / Shortsword",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Sneak Attack",
-        desc: "Extra 1d6 damage if attacking with advantage",
-        coach: "Only triggers once per turn; wait until you have advantage!",
+        name: "Dagger",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Shortbow Attack",
-        desc: "+5 to hit, 1d6+3 damage, range 80/320 ft",
-        coach: "Shoot from behind cover to trigger Sneak Attack.",
+        name: "Vicious Mockery",
+        desc: "",
+        coach: "",
         used: false,
       },
       {
-        name: "Cunning Action",
-        desc: "Dash, Disengage, or Hide as a bonus action",
-        coach: "Allows extra mobility—escape or reposition each turn.",
+        name: "Bardic Inspiration",
+        desc: "",
+        coach: "",
         used: false,
       },
     ],
   },
-  // You can stub out additional 8 characters as needed for a full 12-player test.
+  taj: {
+    name: "Taj",
+    className: "Level 1 Elf",
+    hp: "12 / 12",
+    ac: "14",
+    spellSlots: "0 / 0",
+    combatAbilities: [
+      {
+        name: "Greatsword",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Longbow",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Second Wind",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
+  twilight: {
+    name: "Twilight",
+    className: "Level 1 Tabaxi Rogue",
+    hp: "10 / 10",
+    ac: "14",
+    spellSlots: "0 / 0",
+    combatAbilities: [
+      {
+        name: "Shortsword",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Rapier",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Crossbow",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Bitey (Claws)",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+      {
+        name: "Dagger",
+        desc: "",
+        coach: "",
+        used: false,
+      },
+    ],
+  },
 };
 
 export const initiativeOrder = [
-  "sparkleblast",
-  "thorin",
-  "luna",
-  "pip",
-  // Add the other 8 placeholders if you want to fully simulate a 12-player round,
-  // e.g. { char: "dummy1", initiative: 10 }, etc.
+  "acid",
+  "cheoah",
+  "ember",
+  "graicro",
+  "ishbosheth",
+  "ivey",
+  "nimloth",
+  "nobstobber",
+  "pearl",
+  "sennafef",
+  "taj",
+  "twilight",
 ];
