@@ -56,3 +56,14 @@ A chronologically ordered list of major project decisions.
     },
     // …
   };
+
+## D007: Update CI lint & format scripts to target source files
+- **Date:** 2025-06-08  
+- **Context:** GitHub Actions was failing because our `lint` and `format:check` scripts pointed at a non-existent `app.js`.  
+- **Decision:** Change npm scripts in `package.json` so that:
+  - `"lint": "eslint \"src/**/*.js\""`
+  - `"format:check": "prettier --check \"src/**/*.js\""`
+- **Rationale:**  
+  - Ensures ESLint/Prettier actually run against the files under `src/`.  
+  - Satisfies the CI workflow without altering source layout.  
+- **Status:** Accepted  
