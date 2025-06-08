@@ -7,7 +7,7 @@
 export const characters = {
   sparkleblast: {
     name: "✨ Sparkleblast",
-    class: "Level 2 Elf Sorcerer",
+    className: "Level 2 Elf Sorcerer",
     hp: "8 / 14",
     ac: "12",
     spellSlots: "1 / 2",
@@ -42,7 +42,7 @@ export const characters = {
 
   thorin: {
     name: "🪓 Thorin",
-    class: "Level 2 Dwarf Barbarian",
+    className: "Level 2 Dwarf Barbarian",
     hp: "18 / 20",
     ac: "14",
     spellSlots: "0 / 0",
@@ -77,7 +77,7 @@ export const characters = {
 
   luna: {
     name: "🏹 Luna",
-    class: "Level 2 Elf Ranger",
+    className: "Level 2 Elf Ranger",
     hp: "14 / 16",
     ac: "15",
     spellSlots: "0 / 0",
@@ -112,7 +112,7 @@ export const characters = {
 
   pip: {
     name: "🗡️ Pip",
-    class: "Level 2 Halfling Rogue",
+    className: "Level 2 Halfling Rogue",
     hp: "12 / 14",
     ac: "13",
     spellSlots: "0 / 0",
@@ -147,10 +147,10 @@ export const characters = {
 };
 
 export const initiativeOrder = [
-  { char: "sparkleblast", initiative: 18 },
-  { char: "thorin", initiative: 15 },
-  { char: "luna", initiative: 12 },
-  { char: "pip", initiative: 8 },
+  "sparkleblast",
+  "thorin",
+  "luna",
+  "pip",
   // Add the other 8 placeholders if you want to fully simulate a 12-player round,
   // e.g. { char: "dummy1", initiative: 10 }, etc.
 ];

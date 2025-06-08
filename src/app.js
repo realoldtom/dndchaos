@@ -78,10 +78,9 @@ function renderUI() {
   // 4) DM Controls
   const controls = document.createElement("div");
   controls.className = "dm-controls";
-  ["Next Turn", "Skip Player", "Reset Combat"].forEach((label, i) => {
+  ["⏭️ Next Turn", "⏭️ Skip Player", "🔄 Reset Combat"].forEach((label, i) => {
     const btn = document.createElement("button");
-    btn.textContent =
-      i === 0 ? "⏭️ Next Turn" : i === 1 ? "⏭️ Skip Player" : "🔄 Reset Combat";
+    btn.textContent = label;
     btn.addEventListener("click", [nextTurn, skipTurn, resetCombat][i]);
     controls.appendChild(btn);
   });
@@ -111,6 +110,7 @@ function nextTurn() {
 function skipTurn() {
   nextTurn();
 }
+
 function resetCombat() {
   if (!confirm("Reset combat?")) return;
   Object.values(state.characters).forEach((c) =>
