@@ -1,49 +1,77 @@
-# Phase 1 Commit-by-Commit Roadmap
+# Phase 1 Commit-by-Commit Roadmap (Core MVP Stability & Logic)
 
-Below is the ordered list of Conventional-Commit–style commits you’ll make to complete Phase 1 (Core MVP Stability & Logic). Each commit represents a small, self-contained change.
+## Critical Foundation Fixes (Commits 1–3)
 
-1. **feat(storage): embed `schemaVersion` in persisted state**  
-   - Modify `saveState` and `loadState` in `utils/storage.js` to include and read a top-level `schemaVersion` field.  
-   - Update existing tests (if any) to expect the new field.
+1. **fix(data): rename `class` to `className` & align `initiativeOrder` to IDs**  
+   - In **`src/data/characters.js`**:  
+     - Rename each character’s `class` property to `className`.  
+     - Convert the existing `initiativeOrder` array of `{ char, initiative }` objects into a simple array of string IDs:
+       ```js
+       export const initiativeOrder = [
+         "sparkleblast",
+         "thorin",
+         "luna",
+         "pip",
+         // …others
+       ];
+       ```  
+   - In **`src/app.js`**: update all references to use `currentChar.className` and treat `state.initiativeOrder` entries as string IDs.  
+   - Add test verifying turn cycling.
 
-2. **feat(storage): debounce `saveState()` calls at 200 ms**  
-   - Wrap `saveState` calls in a debounced helper (e.g. using `setTimeout`) so rapid state changes don’t thrash `localStorage`.  
-   - Ensure the API of `saveState()` is unchanged for callers.
+2. **feat(data): validate character definitions on app load**  
+   - In `init()`, assert each character has `name`, `className`, `combatAbilities`.  
+   - Ensure 2–4 abilities with non-empty `coach` text.  
+   - Throw a descriptive error naming the offending character on failure.
 
-3. **test(storage): add unit tests for `mergeState()` edge cases**  
-   - Create a new test file (e.g. `src/utils/storage.test.js`).  
-   - Cover scenarios: missing keys, extra keys, corrupted JSON, mismatched `schemaVersion`.  
-   - Verify that `mergeState` preserves `used` flags and turn index correctly.
+3. **fix(storage): handle corrupted localStorage gracefully**  
+   - Wrap `JSON.parse()` in `loadState()` with try/catch.  
+   - On parse error, clear `localStorage` and return `null`.  
+   - Log a warning when state is reset.
 
-4. **feat(data): validate character definitions on load**  
-   - In `data/characters.js` or during app init, assert each character has 2–4 abilities and non-empty `coach` text.  
-   - Throw a descriptive error (or `console.error`) if validation fails.
+## Storage & State Management (Commits 4–7)
 
-5. **chore(data): standardize emoji usage in character names**  
-   - Decide on including or stripping emojis (e.g. always prefix names with one emoji).  
-   - Normalize all entries in `data/characters.js` to match that standard.
+4. **feat(storage): embed schemaVersion in persisted state**  
+   - Add `schemaVersion: "1.0"` in `saveState()`.  
+   - In `loadState()`, clear state on version mismatch.
 
-6. **refactor(ui): split `renderUI()` into `renderHeader()` & `renderActions()`**  
-   - Extract the header-rendering portion (current player name/class) into `renderHeader(state)`.  
-   - Extract the action-grid rendering into `renderActions(state)`.
+5. **feat(storage): debounce saveState() calls at 200 ms**  
+   - Implement `debouncedSaveState()` wrapper.  
+   - Replace direct `saveState()` calls with the debounced version.  
+   - Ensure a final save on `beforeunload`.
 
-7. **refactor(ui): extract `renderNextUp()` and `renderControls()`**  
-   - Pull out the “Next Up” list into `renderNextUp(state)`.  
-   - Pull out the DM controls (Next, Skip, Reset) into `renderControls(onClickHandlers)`.
+6. **test(storage): add unit tests for mergeState() edge cases**  
+   - Create `src/utils/storage.test.js`.  
+   - Cover missing characters, extra data, mismatched abilities.  
+   - Verify “used” flags are preserved after merge.
 
-8. **feat(ui): add ARIA roles, `tabindex`, and `aria-current`**  
-   - On each `.action-card`, add `role="button"` and `tabindex="0"`.  
-   - On the current-turn element, add `aria-current="step"`.  
-   - Verify keyboard navigation works (Tab + Enter/Space).
+7. **feat(state): introduce simple event-driven state management**  
+   - Add `StateStore` class in `src/utils/state.js` with `subscribe()`, `publish()`, `getState()`.  
+   - Refactor code to emit state updates instead of calling `renderUI()` directly.
 
-9. **feat(state): introduce simple event-emitter for state changes**  
-   - Create a lightweight `StateStore` in `src/utils/state.js` with `subscribe()`, `publish()`.  
-   - Replace direct calls to `saveState`/`renderUI` in `app.js` with `store.publish('stateChanged')`.  
-   - Wire `renderUI` as a listener to `stateChanged`.
+## UI Modularity & Accessibility (Commits 8–11)
 
-10. **chore: add README note about new storage schema & tests**  
-    - Update `README.md` under the “Running Tests” and “Storage Format” sections to document `schemaVersion`, debounced saves, and how to run the new tests (`npm test`).
+8. **refactor(ui): split renderUI() into focused render functions**  
+   - Extract `renderHeader()`, `renderActions()`, `renderNextUp()`, `renderControls()`.
 
----
+9. **feat(ui): add keyboard navigation and ARIA support**  
+   - Add `role="button"`, `tabindex="0"`, `aria-current="step"` to interactive elements.  
+   - Handle Enter/Space on action cards.  
+   - Ensure logical tab order through the grid.
 
-**After Commit 10**, Phase 1 is complete. You’ll have a robust, test-covered storage layer, validated input data, and a modular, accessible UI driven by a simple state store. Ready to move on to Phase 2!  
+10. **refactor(ui): wire rendering through StateStore events**  
+    - Replace manual `renderUI()` calls with `state.publish('update')`.
+
+11. **chore(data): standardize character data formatting**  
+    - Normalize emoji usage in `name`.  
+    - Prefix coach h
+12. **feat(ui): enable initiative-order reordering in UI**  
+    - Add drag-and-drop or up/down controls to the mini initiative list.  
+    - On reorder, update `state.initiativeOrder` and persist via `saveState()`.  
+    - Add unit tests and a simple e2e/test harness to verify reordering.
+
+    ## Documentation & Finalization (Commit 13)
+
+13. **docs: update README for Phase 1 changes**  
+    - Document `schemaVersion`, debounced save, StateStore, error boundary, and new reorder feature.  
+    - Add “Running tests” section (`npm test`) and CI badge.  
+    - Update examples, file paths, and architecture notes.
