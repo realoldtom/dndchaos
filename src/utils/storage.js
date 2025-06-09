@@ -1,7 +1,4 @@
 // src/utils/storage.js
-/**
- * @jest-environment jsdom
- */
 
 const STORAGE_KEY = "dnd-chaos-manager-state";
 

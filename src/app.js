@@ -41,12 +41,18 @@ let state = { characters: {}, initiativeOrder: [], currentTurnIndex: 0 };
 const appRoot = document.getElementById("app-root");
 
 function init() {
-  // 0) Sanity-check our static data before doing anything else
+  // 0) Sanity-check our static data
   validateCharacters(characters);
 
-  const saved = loadState();
+  // 1) Load persisted state (or get an empty object)
+  const raw = loadState();
+  const saved = raw || {};
+
+  // 2) Merge defaults + saved
   const merged = mergeState(characters, initiativeOrder, saved);
   Object.assign(state, merged);
+
+  // 3) Render
   renderUI();
   window.addEventListener("beforeunload", () => saveState({ ...state }));
 }
