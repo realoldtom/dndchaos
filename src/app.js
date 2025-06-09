@@ -8,10 +8,42 @@ import {
 } from "./utils/storage.js";
 import { characters, initiativeOrder } from "./data/characters.js";
 
+/**
+ * Ensure each character object conforms to our required schema.
+ * @param {Record<string, Character>} chars
+ * @throws {Error} if any character is mis-configured
+ */
+export function validateCharacters(chars) {
+  Object.entries(chars).forEach(
+    ([id, { name, className, combatAbilities }]) => {
+      if (!name || !className || !Array.isArray(combatAbilities)) {
+        throw new Error(
+          `Invalid character definition: ${id} – missing name, className, or combatAbilities`,
+        );
+      }
+      if (combatAbilities.length < 2 || combatAbilities.length > 10) {
+        throw new Error(
+          `Invalid character definition: ${id} – combatAbilities must have 2–4 entries`,
+        );
+      }
+      combatAbilities.forEach((ability, idx) => {
+        if (!ability.coach || ability.coach.trim() === "") {
+          throw new Error(
+            `Invalid character definition: ${id} – ability[${idx}].coach must be non-empty`,
+          );
+        }
+      });
+    },
+  );
+}
+
 let state = { characters: {}, initiativeOrder: [], currentTurnIndex: 0 };
 const appRoot = document.getElementById("app-root");
 
 function init() {
+  // 0) Sanity-check our static data before doing anything else
+  validateCharacters(characters);
+
   const saved = loadState();
   const merged = mergeState(characters, initiativeOrder, saved);
   Object.assign(state, merged);
