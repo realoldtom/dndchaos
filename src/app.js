@@ -1,5 +1,6 @@
 // src/app.js
 
+import StateStore from "./utils/state.js";
 import {
   loadState,
   mergeState,
@@ -16,7 +17,6 @@ export function validateCharacters(chars) {
         `Invalid character definition: ${id} – combatAbilities must be an array`,
       );
     }
-
     character.combatAbilities.forEach((ability, idx) => {
       if (typeof ability.coach !== "string" || ability.coach.trim() === "") {
         throw new Error(
@@ -27,7 +27,7 @@ export function validateCharacters(chars) {
   }
 }
 
-let state = { characters: {}, initiativeOrder: [], currentTurnIndex: 0 };
+let store;
 const appRoot = document.getElementById("app-root");
 
 function init() {
@@ -35,30 +35,39 @@ function init() {
 
   const raw = loadState();
   const saved = raw || {};
+  const initial = mergeState(characters, initiativeOrder, saved);
 
-  const merged = mergeState(characters, initiativeOrder, saved);
-  Object.assign(state, merged);
+  // create our event-driven store
+  store = new StateStore(initial);
 
-  renderUI();
-  // Keep the direct flush on unload
-  window.addEventListener("beforeunload", () => saveState({ ...state }));
+  // on every change: save + rerender
+  store.subscribe((state) => {
+    debouncedSaveState({ ...state });
+    renderUI(state);
+  });
+
+  // final flush on unload
+  window.addEventListener("beforeunload", () =>
+    saveState({ ...store.getState() }),
+  );
+
+  // first render
+  renderUI(store.getState());
 }
 
-function renderUI() {
-  // 1) Clear the root
+function renderUI(state) {
   appRoot.innerHTML = "";
 
-  // 2) Figure out whose turn it is
   const charId = state.initiativeOrder[state.currentTurnIndex];
   const currentChar = state.characters[charId];
 
-  // 3) Header: “🔮 It’s X’s Turn!”
+  // Header
   const header = document.createElement("div");
   header.className = "turn-tracker";
-  header.textContent = `🔮✨ It’s ${currentChar.className}’s Turn! ✨🔮`;
+  header.textContent = `🔮✨ It’s ${currentChar.name} the ${currentChar.className}’s Turn! ✨🔮`;
   appRoot.appendChild(header);
 
-  // 4) Preview pane: HP / AC / Spell Slots
+  // Preview
   const preview = document.createElement("div");
   preview.className = "up-next";
   preview.innerHTML = `
@@ -68,14 +77,15 @@ function renderUI() {
   `;
   appRoot.appendChild(preview);
 
-  // 5) Action grid: each ability as a card/button
+  // Abilities
   const actionGrid = document.createElement("div");
   actionGrid.className = "actions-grid";
-  currentChar.combatAbilities.forEach((ability) => {
+  currentChar.combatAbilities.forEach((ability, idx) => {
     const card = document.createElement("button");
     card.className = "action-card";
+    if (ability.used) card.classList.add("used");
 
-    // pick an emoji based on keywords in the name
+    // choose emoji
     let icon = "✨";
     if (/sword|dagger|scimitar/i.test(ability.name)) icon = "⚔️";
     if (/bow|crossbow/i.test(ability.name)) icon = "🏹";
@@ -89,71 +99,84 @@ function renderUI() {
       <div class="coach-hint">💡 ${ability.coach}</div>
     `;
 
-    // On click: mark used, style, and debounced save
     card.addEventListener("click", () => {
-      if (!ability.used) {
-        ability.used = true;
-        card.classList.add("used");
-        debouncedSaveState({ ...state });
-      }
+      if (ability.used) return;
+      // publish a state update
+      store.publish((s) => {
+        const chars = { ...s.characters };
+        const charCopy = { ...chars[charId] };
+        const abilities = charCopy.combatAbilities.slice();
+        abilities[idx] = { ...abilities[idx], used: true };
+        charCopy.combatAbilities = abilities;
+        chars[charId] = charCopy;
+        return { ...s, characters: chars };
+      });
     });
 
     actionGrid.appendChild(card);
   });
   appRoot.appendChild(actionGrid);
 
-  // 6) DM Controls: Next, Skip, Reset
+  // DM Controls
   const controls = document.createElement("div");
   controls.className = "dm-controls";
 
   const nextBtn = document.createElement("button");
   nextBtn.textContent = "➡️ Next Turn";
-  nextBtn.addEventListener("click", nextTurn);
+  nextBtn.addEventListener("click", () => {
+    store.publish((s) => ({
+      ...s,
+      currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
+    }));
+  });
 
   const skipBtn = document.createElement("button");
   skipBtn.textContent = "⏭️ Skip Turn";
-  skipBtn.addEventListener("click", skipTurn);
+  skipBtn.addEventListener("click", () => {
+    store.publish((s) => ({
+      ...s,
+      currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
+    }));
+  });
 
   const resetBtn = document.createElement("button");
   resetBtn.textContent = "🔄 Reset Combat";
-  resetBtn.addEventListener("click", resetCombat);
+  resetBtn.addEventListener("click", () => {
+    if (!confirm("Reset combat?")) return;
+    store.publish((s) => {
+      // clear all used flags
+      const resetChars = {};
+      for (const [id, ch] of Object.entries(s.characters)) {
+        resetChars[id] = {
+          ...ch,
+          combatAbilities: ch.combatAbilities.map((a) => ({
+            ...a,
+            used: false,
+          })),
+        };
+      }
+      return {
+        characters: resetChars,
+        initiativeOrder: [...s.initiativeOrder],
+        currentTurnIndex: 0,
+      };
+    });
+    clearState();
+  });
 
   controls.append(nextBtn, skipBtn, resetBtn);
   appRoot.appendChild(controls);
 
-  // 7) Mini-order: show upcoming turns
+  // Initiative list
   const miniOrder = document.createElement("div");
   miniOrder.className = "initiative-list";
   state.initiativeOrder.forEach((id, i) => {
     const spot = document.createElement("span");
     spot.textContent = state.characters[id].name;
-    if (i === state.currentTurnIndex) {
-      spot.classList.add("current");
-    }
+    if (i === state.currentTurnIndex) spot.classList.add("current");
     miniOrder.appendChild(spot);
   });
   appRoot.appendChild(miniOrder);
-}
-
-function nextTurn() {
-  state.currentTurnIndex =
-    (state.currentTurnIndex + 1) % state.initiativeOrder.length;
-  debouncedSaveState({ ...state });
-  renderUI();
-}
-
-function skipTurn() {
-  nextTurn();
-}
-
-function resetCombat() {
-  if (!confirm("Reset combat?")) return;
-  Object.values(state.characters).forEach((c) =>
-    c.combatAbilities.forEach((a) => (a.used = false)),
-  );
-  state.currentTurnIndex = 0;
-  clearState();
-  renderUI();
 }
 
 window.addEventListener("DOMContentLoaded", init);
