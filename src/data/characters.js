@@ -65,7 +65,7 @@ export const characters = {
 
   ember: {
     name: "Ember",
-    className: "",
+    className: "Druid",
     hp: "10 / 10",
     ac: "18",
     spellSlots: "0 / 2",
