@@ -1,4 +1,6 @@
-/* eslint-env jest */
+/**
+ * @jest-environment jsdom
+ */
 
 import { describe, it, expect } from "@jest/globals";
 import { mergeState } from "../utils/storage";

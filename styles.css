@@ -121,7 +121,21 @@ body {
   font-size: 0.9em;
   color: #2c3e50;
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  content: "✨";  
 }
+
+.initiative-list span {
+  display: inline-block;
+  margin: 0 0.25rem;
+}
+/* insert a • before every span except the first */
+.initiative-list span + span::before {
+  content: "•";
+  margin-right: 0.25rem;
+  color: #666;
+}
+
 
 /* 10. Media Queries for Tablet/Phone (optional) */
 @media (max-width: 600px) {
@@ -133,4 +147,13 @@ body {
   .turn-tracker {
     font-size: 1.5em;
   }
+}
+
+.ability-name {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+.ability-desc {
+  font-size: 0.95em;
+  margin-bottom: 0.6rem;
 }

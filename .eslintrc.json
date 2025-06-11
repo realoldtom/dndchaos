@@ -2,28 +2,30 @@
   "root": true,
   "env": {
     "browser": true,
-    "es2021": true,
-    "node": true
+    "es2021": true
   },
   "parserOptions": {
-    "ecmaVersion": "latest",
+    "ecmaVersion": 12,
     "sourceType": "module"
   },
   "plugins": ["jest"],
   "extends": [
     "eslint:recommended",
-    "plugin:jest/recommended",
-    "plugin:jest/style"
+    "plugin:jest/recommended"
   ],
   "rules": {
-    "semi": ["error", "always"],
-    "quotes": ["error", "single"]
+    //"no-inline-styles": "error"
   },
   "overrides": [
     {
-      "files": ["**/__tests__/**/*.js", "**/*.test.js"],
+      "files": [
+        "src/__tests__/**/*.js",
+        "**/*.test.js"
+      ],
       "env": {
-        "jest": true
+        "jest": true,
+        "browser": true,
+        "es2021": true
       }
     }
   ]
