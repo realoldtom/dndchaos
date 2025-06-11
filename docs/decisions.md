@@ -68,7 +68,7 @@ A chronologically ordered list of major project decisions.
 - **Rationale:**  
   - Enables future migrations if the shape changes.  
   - Provides clear upgrade path for backward-compatibility.  
-- **Status:** Proposed  
+- **Status:** Complete  
 
 ---
 
@@ -79,7 +79,7 @@ A chronologically ordered list of major project decisions.
 - **Rationale:**  
   - Catches edge cases in turn progression.  
   - Ensures robust turn-cycle behavior as schema evolves.  
-- **Status:** Proposed  
+- **Status:** Complete  
 
 ---
 

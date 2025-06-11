@@ -9,6 +9,13 @@ import {
   debouncedSaveState,
 } from "./utils/storage.js";
 import { characters, initiativeOrder } from "./data/characters.js";
+import {
+  renderHeader,
+  renderPreview,
+  renderActions,
+  renderControls,
+  renderInitiativeList,
+} from "./ui/renderers.js";
 
 export function validateCharacters(chars) {
   for (const [id, character] of Object.entries(chars)) {
@@ -58,125 +65,71 @@ function init() {
 function renderUI(state) {
   appRoot.innerHTML = "";
 
+  // determine current character
   const charId = state.initiativeOrder[state.currentTurnIndex];
   const currentChar = state.characters[charId];
 
-  // Header
-  const header = document.createElement("div");
-  header.className = "turn-tracker";
-  header.textContent = `🔮✨ It’s ${currentChar.name} the ${currentChar.className}’s Turn! ✨🔮`;
-  appRoot.appendChild(header);
+  // 1) Header
+  renderHeader(appRoot, currentChar.name, currentChar.className);
 
-  // Preview
-  const preview = document.createElement("div");
-  preview.className = "up-next";
-  preview.innerHTML = `
-    <div>❤️ <strong>HP:</strong> ${currentChar.hp}</div>
-    <div>🛡️ <strong>AC:</strong> ${currentChar.ac}</div>
-    <div>✨ <strong>Slots:</strong> ${currentChar.spellSlots}</div>
-  `;
-  appRoot.appendChild(preview);
+  // 2) Preview pane
+  renderPreview(
+    appRoot,
+    currentChar.hp,
+    currentChar.ac,
+    currentChar.spellSlots,
+  );
 
-  // Abilities
-  const actionGrid = document.createElement("div");
-  actionGrid.className = "actions-grid";
-  currentChar.combatAbilities.forEach((ability, idx) => {
-    const card = document.createElement("button");
-    card.className = "action-card";
-    if (ability.used) card.classList.add("used");
-
-    // choose emoji
-    let icon = "✨";
-    if (/sword|dagger|scimitar/i.test(ability.name)) icon = "⚔️";
-    if (/bow|crossbow/i.test(ability.name)) icon = "🏹";
-    if (/claws/i.test(ability.name)) icon = "🐾";
-    if (/frost|ice/i.test(ability.name)) icon = "❄️";
-    if (/breath|area/i.test(ability.name)) icon = "🌬️";
-
-    card.innerHTML = `
-      <div class="ability-name">${icon} ${ability.name}</div>
-      <div class="ability-desc">${ability.desc}</div>
-      <div class="coach-hint">💡 ${ability.coach}</div>
-    `;
-
-    card.addEventListener("click", () => {
-      if (ability.used) return;
-      // publish a state update
-      store.publish((s) => {
-        const chars = { ...s.characters };
-        const charCopy = { ...chars[charId] };
-        const abilities = charCopy.combatAbilities.slice();
-        abilities[idx] = { ...abilities[idx], used: true };
-        charCopy.combatAbilities = abilities;
-        chars[charId] = charCopy;
-        return { ...s, characters: chars };
-      });
-    });
-
-    actionGrid.appendChild(card);
-  });
-  appRoot.appendChild(actionGrid);
-
-  // DM Controls
-  const controls = document.createElement("div");
-  controls.className = "dm-controls";
-
-  const nextBtn = document.createElement("button");
-  nextBtn.textContent = "➡️ Next Turn";
-  nextBtn.addEventListener("click", () => {
-    store.publish((s) => ({
-      ...s,
-      currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
-    }));
-  });
-
-  const skipBtn = document.createElement("button");
-  skipBtn.textContent = "⏭️ Skip Turn";
-  skipBtn.addEventListener("click", () => {
-    store.publish((s) => ({
-      ...s,
-      currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
-    }));
-  });
-
-  const resetBtn = document.createElement("button");
-  resetBtn.textContent = "🔄 Reset Combat";
-  resetBtn.addEventListener("click", () => {
-    if (!confirm("Reset combat?")) return;
+  // 3) Abilities grid
+  renderActions(appRoot, currentChar.combatAbilities, (idx) => {
     store.publish((s) => {
-      // clear all used flags
-      const resetChars = {};
-      for (const [id, ch] of Object.entries(s.characters)) {
-        resetChars[id] = {
-          ...ch,
-          combatAbilities: ch.combatAbilities.map((a) => ({
-            ...a,
-            used: false,
-          })),
-        };
-      }
-      return {
-        characters: resetChars,
-        initiativeOrder: [...s.initiativeOrder],
-        currentTurnIndex: 0,
-      };
+      const chars = { ...s.characters };
+      const charCopy = { ...chars[charId] };
+      const abilities = [...charCopy.combatAbilities];
+      abilities[idx] = { ...abilities[idx], used: true };
+      charCopy.combatAbilities = abilities;
+      chars[charId] = charCopy;
+      return { ...s, characters: chars };
     });
-    clearState();
   });
 
-  controls.append(nextBtn, skipBtn, resetBtn);
-  appRoot.appendChild(controls);
-
-  // Initiative list
-  const miniOrder = document.createElement("div");
-  miniOrder.className = "initiative-list";
-  state.initiativeOrder.forEach((id, i) => {
-    const spot = document.createElement("span");
-    spot.textContent = state.characters[id].name;
-    if (i === state.currentTurnIndex) spot.classList.add("current");
-    miniOrder.appendChild(spot);
+  // 4) DM Controls
+  renderControls(appRoot, {
+    onNext: () =>
+      store.publish((s) => ({
+        ...s,
+        currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
+      })),
+    onSkip: () =>
+      store.publish((s) => ({
+        ...s,
+        currentTurnIndex: (s.currentTurnIndex + 1) % s.initiativeOrder.length,
+      })),
+    onReset: () => {
+      if (!confirm("Reset combat?")) return;
+      store.publish((s) => {
+        const resetChars = {};
+        for (const [id, ch] of Object.entries(s.characters)) {
+          resetChars[id] = {
+            ...ch,
+            combatAbilities: ch.combatAbilities.map((a) => ({
+              ...a,
+              used: false,
+            })),
+          };
+        }
+        return {
+          ...s,
+          characters: resetChars,
+          currentTurnIndex: 0,
+        };
+      });
+      clearState();
+    },
   });
-  appRoot.appendChild(miniOrder);
+
+  // 5) Initiative list
+  renderInitiativeList(appRoot, state.initiativeOrder, state.currentTurnIndex);
 }
 
 window.addEventListener("DOMContentLoaded", init);
