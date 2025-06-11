@@ -15,7 +15,6 @@ export function loadState() {
   try {
     const parsed = JSON.parse(raw);
 
-    // 1) Version check: drop any data that doesn't match
     if (parsed.schemaVersion !== SCHEMA_VERSION) {
       console.warn(
         `Warning: schema version mismatch (found ${parsed.schemaVersion}, expected ${SCHEMA_VERSION}) – resetting state.`,
@@ -24,7 +23,6 @@ export function loadState() {
       return null;
     }
 
-    // 2) Strip the version field before returning
     delete parsed.schemaVersion;
     return parsed;
   } catch (err) {
@@ -55,6 +53,24 @@ export function saveState(state) {
 }
 
 /**
+ * debounce(fn, wait)
+ * Returns a version of `fn` that waits `wait` ms after the *last* call
+ * before actually invoking. Good for rate-limiting rapid state saves.
+ */
+function debounce(fn, wait = 200) {
+  let timeoutId = null;
+  return function debounced(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), wait);
+  };
+}
+
+/**
+ * A debounced version of saveState, waiting 200ms after the last call.
+ */
+export const debouncedSaveState = debounce(saveState, 200);
+
+/**
  * Remove any saved session state.
  */
 export function clearState() {
@@ -64,22 +80,14 @@ export function clearState() {
 /**
  * Merge static defaults with saved state:
  * - Restores saved `used` flags on abilities.
- * - Restores saved initiative order (filtering out invalid IDs and appending any new ones).
+ * - Restores saved initiative order.
  * - Restores saved currentTurnIndex.
- *
- * @param {Record<string, Character>} defaultChars
- * @param {string[]} defaultOrder
- * @param {SavedState} [saved={}]       // NB: you may want to guard against `null` here!
- * @returns {{ characters: Record<string, Character>, initiativeOrder: string[], currentTurnIndex: number }}
  */
 export function mergeState(defaultChars, defaultOrder, saved = {}) {
-  // If loadState() returned null, saved will be null—guard that here:
   saved = saved || {};
 
-  // 1) Deep-clone the default characters so we don't mutate them
   const characters = JSON.parse(JSON.stringify(defaultChars));
 
-  // 2) Merge in just the `used` flags
   if (saved.characters) {
     for (const [id, savedChar] of Object.entries(saved.characters)) {
       if (
@@ -100,7 +108,6 @@ export function mergeState(defaultChars, defaultOrder, saved = {}) {
     }
   }
 
-  // 3) Rebuild initiativeOrder:
   let initiativeOrder;
   if (Array.isArray(saved.initiativeOrder) && saved.initiativeOrder.length) {
     const filtered = saved.initiativeOrder.filter((id) =>
@@ -112,7 +119,6 @@ export function mergeState(defaultChars, defaultOrder, saved = {}) {
     initiativeOrder = [...defaultOrder];
   }
 
-  // 4) Restore turn index (or default to 0)
   const currentTurnIndex =
     typeof saved.currentTurnIndex === "number" ? saved.currentTurnIndex : 0;
 
